@@ -1,0 +1,21 @@
+Coding Exercise for Dell: Add Minutes to a Time
+Author: Jeff Fox
+
+The application can be found at:
+http://madgnome-nodejs-92844.usw1-2.nitrousbox.com:3000/
+
+If an email is furnished, I can add you as a collaborator to my nitrous.io box where the code can be viewed; chat is also availbe in the nitrous IDE.
+
+In addition, the code is being sent as dell.tgz
+
+Directions for testing:
+tar xf dell.tgz
+npm install
+npm start
+
+A web page will be available at localhost:3000
+addMinutes.js can be tested at the node.js command line:
+$ node
+> addMinutes = require('./addMinutes')
+> addMinutes('9:13 AM', 10)
+// 9:23 AM

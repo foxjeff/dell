@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="utf-8">
+  <title>Coding Exercise for Dell</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.19/angular.min.js"></script>
+  <style type="text/css">
+    .error {
+      color: red;
+      font-style: italic;
+      font-size: 90%;
+    }
+    .showtime {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body ng-app="myapp">
+
+  <div>
+    <h3>Coding Exercise for Dell: Add Minutes to a Time</h3>
+  </div>
+  <hr/>
+  <div ng-controller="AppCtrl">
+    <div id="errortext" class="error" ng-show="onerror">
+      {{ errortext }}
+    </div>
+    <form name="atime">
+      <span>Enter a time, such as 9:13 AM:</span>
+      <br>
+      <input type="text" ng-model="basetime" name="basetime" ng-pattern="timePattern" placeholder="9:13 AM" required/>
+      <span class="error" ng-show="atime.basetime.$error.pattern">Enter a valid time such as 9:13 AM</span>
+      <span>{{ basetime }}</span> 
+      <br><br>
+      <span>Enter the number of minutes to add or subtract:</span>
+      <br>
+      <input type="number" ng-model="delta" name="delta" placeholder=10 required/>
+      <span class="error" ng-show="atime.delta.$error.number">Enter a valid number please</span>
+      <span>{{ delta }}</span> 
+      <br>
+      <button ng-click="getNewtime()" >Click Me for the New Time</button>
+      <h3 ng-show="showtime">New Time: <span class="showtime"> {{ newtime }} </span></h3>
+    </form>
+  </div>
+
+  <script type="text/javascript">
+    var myapp = angular.module("myapp",[]);
+    myapp.controller("AppCtrl", function ($scope,$http) {
+      $scope.timePattern = /^(\d+):(\d{2}) ([AP]M)$/;
+      $scope.showtime = false;
+      $scope.clearError = function() {
+        $scope.onerror = false;
+        $scope.errortext = null;    
+      };
+      $scope.clearError();
+
+      $scope.showError = function(errorText) {
+        $scope.errortext = 'Error: ' + errorText;
+        $scope.onerror = true;
+        $scope.showtime = false;
+      };
+      $scope.getNewtime = function() {
+        if ($scope.delta === null || $scope.delta === undefined || !$scope.basetime)
+          return;          
+        
+        $http.get('/api/addMinutes?time=' + $scope.basetime + '&delta=' + $scope.delta).
+          success(function(data, status, headers) {
+            $scope.clearError();
+            $scope.newtime = data;
+            $scope.showtime = true;
+            console.log("success: " + status + "\n" + $scope.newtime);
+          }).
+          error(function(data, status, headers) {
+            $scope.showError(data);
+            $scope.basetime = null;
+            $scope.delta = null;
+            console.log("error: " + status + "\n" + data);
+          });
+        };
+      });
+  </script>
+</body>
+</html>
+
+
